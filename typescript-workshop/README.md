@@ -13,7 +13,7 @@ tsc --version  # should be 5.x
 
 | # | File | Topic | Time |
 |---|------|-------|------|
-| 01 | `01-basics.ts` | Types, inference, functions, any vs unknown | 7 min |
+| 01 | `01-basics.ts` | Types, inference, functions, assertions | 8 min |
 | 02 | `02-interfaces-types.ts` | Interface vs Type — when to use which | 5 min |
 | 03 | `03-unions-intersections.ts` | Union (`\|`) and Intersection (`&`) | 5 min |
 | 04 | `04-generics.ts` | `<T>`, `Promise<T>`, async return types | 8 min |
@@ -21,6 +21,7 @@ tsc --version  # should be 5.x
 | 06 | `06-type-guards.ts` | typeof, instanceof, error handling patterns | 7 min |
 | 07 | `07-literals-enums.ts` | Literal types, enums, `as const` | 5 min |
 | 08 | `08-discriminated-unions.ts` | The most useful advanced pattern + recap | 7 min |
+| 09 | `09-classes.ts` | Classes, abstract, access modifiers, `implements` | 7 min |
 
 ## How to Run
 

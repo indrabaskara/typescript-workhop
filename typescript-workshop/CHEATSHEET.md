@@ -175,6 +175,35 @@ function handle(s: State) {
 }
 ```
 
+## Classes & OOP
+
+```ts
+// Abstract class — defines contract, can't be instantiated
+abstract class BaseRepo<T extends { id: number }> {
+  protected items: T[] = [];
+  add(item: T): void { this.items.push(item); }
+  abstract delete(id: number): boolean;  // subclass must implement
+}
+
+// Concrete class
+class UserRepo extends BaseRepo<User> {
+  delete(id: number): boolean {
+    const i = this.items.findIndex(u => u.id === id);
+    if (i === -1) return false;
+    this.items.splice(i, 1);
+    return true;
+  }
+}
+```
+
+Access modifiers:
+
+```ts
+public    // default — accessible everywhere
+protected // class + subclasses only
+private   // declaring class only
+```
+
 ## Quick Tips
 
 | Do ✅ | Don't ❌ |
@@ -183,4 +212,5 @@ function handle(s: State) {
 | Be explicit with function signatures | Ignore red squiggles |
 | Use discriminated unions for state | Use optional booleans for state |
 | Combine utility types for DTOs | Duplicate types manually |
+| Use `satisfies` for config objects | Overuse `as` assertions |
 | Hover in VS Code to learn types | Over-annotate obvious things |

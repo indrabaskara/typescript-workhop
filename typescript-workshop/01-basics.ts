@@ -68,10 +68,33 @@ function applyDiscount(product: Product, percent: number): number {
 const laptop: Product = { name: "MacBook", price: 2499, inStock: true };
 console.log(applyDiscount(laptop, 10)); // 2249.1
 
+// --- Type Assertions ---
+
+// `as` — tell TS "trust me, I know the type" (use sparingly)
+function loadData(): unknown {
+  return { name: "MacBook", price: 2499, inStock: true };
+}
+const parsed = loadData() as Product;
+console.log(parsed.name); // TS trusts you — no runtime check!
+
+// `satisfies` (TS 5+) — validate shape WITHOUT widening
+const defaultProduct = {
+  name: "Keyboard",
+  price: 79,
+  inStock: true,
+} satisfies Product;
+// defaultProduct.name is "Keyboard" (literal), not just string
+
+// Non-null assertion (!) — "I promise this isn't null"
+// const el = document.getElementById("app")!;
+// Safer: use an if-check instead
+
 /*
   KEY TAKEAWAYS:
   ✅ Be explicit with function params & return types
   ✅ Let TS infer variable types when it's obvious
   ✅ Use ? for optional, use defaults where it makes sense
   ✅ Prefer unknown over any
+  ✅ Prefer satisfies over as — it catches mistakes while keeping precision
+  ✅ Use as sparingly — it bypasses type checking
 */
