@@ -1,4 +1,4 @@
-# Modern TypeScript Workshop (50 min)
+# Modern TypeScript Workshop
 
 A hands-on workshop from basics to practical patterns. Short examples, no fluff.
 
