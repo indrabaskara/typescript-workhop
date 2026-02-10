@@ -1,140 +1,77 @@
-/**
- * 01 - TYPE ANNOTATIONS & INFERENCE
- * Learn the fundamentals of TypeScript types
- */
-
 // ============================================
-// 1. BASIC TYPE ANNOTATIONS
+// 01 - BASICS: Types, Inference & Functions
 // ============================================
 
-// Primitive types
-let username: string = "John Doe";
-let age: number = 25;
+// --- Primitive Types ---
+let username: string = "Alice";
+let age: number = 30;
 let isActive: boolean = true;
-let data: null = null;
-let notDefined: undefined = undefined;
 
-// Type inference - TypeScript automatically detects the type
-let city = "New York"; // TypeScript infers this as string
-// city = 123; // ❌ Error: Type 'number' is not assignable to type 'string'
+// --- Type Inference (let TS figure it out) ---
+let city = "Jakarta"; // TS knows this is string
+// city = 123;        // ❌ Error!
 
-// ============================================
-// 2. ARRAYS & OBJECTS
-// ============================================
+// --- Arrays ---
+let scores: number[] = [90, 85, 100];
+let names: string[] = ["Alice", "Bob"];
 
-// Arrays
-let numbers: number[] = [1, 2, 3, 4, 5];
-let names: Array<string> = ["Alice", "Bob", "Charlie"]; // Alternative syntax
-
-// Objects
-let user: { name: string; age: number; email: string } = {
-  name: "Jane",
-  age: 28,
-  email: "jane@example.com",
+// --- Objects ---
+let user: { name: string; age: number; email?: string } = {
+  name: "Alice",
+  age: 30,
+  // email is optional (?)
 };
 
-// Optional properties with ?
-let product: { name: string; price: number; description?: string } = {
-  name: "Laptop",
-  price: 999,
-  // description is optional
-};
-
-// ============================================
-// 3. FUNCTIONS
-// ============================================
-
-// Function with type annotations
+// --- Functions ---
 function greet(name: string): string {
   return `Hello, ${name}!`;
 }
 
-// Arrow function
-const add = (a: number, b: number): number => {
-  return a + b;
-};
+const add = (a: number, b: number): number => a + b;
 
-// Optional parameters
-function createUser(name: string, age: number, email?: string) {
-  return { name, age, email };
+// optional param
+function introduce(name: string, role?: string): string {
+  return role ? `${name} (${role})` : name;
 }
 
-// Default parameters
-function multiply(a: number, b: number = 2): number {
-  return a * b;
+// default param
+function tax(price: number, rate: number = 0.1): number {
+  return price * rate;
 }
 
-// Void return type (no return value)
-function logMessage(message: string): void {
-  console.log(message);
+// void — no return value
+function log(msg: string): void {
+  console.log(msg);
 }
 
-// ============================================
-// 4. ANY, UNKNOWN, NEVER
-// ============================================
+// --- any vs unknown ---
+let risky: any = "hello"; // ⚠️ avoid — no type checking
+risky = 123;
+risky.whatever(); // no error, but will crash at runtime!
 
-// any - avoid when possible (opts out of type checking)
-let anything: any = "hello";
-anything = 123;
-anything = true;
-
-// unknown - safer than any (requires type checking before use)
-let userInput: unknown = "some user input";
-if (typeof userInput === "string") {
-  console.log(userInput.toUpperCase()); // ✅ Safe after type check
+let safe: unknown = "hello"; // ✅ safer
+if (typeof safe === "string") {
+  console.log(safe.toUpperCase()); // must check type first
 }
 
-// never - for functions that never return
-function throwError(message: string): never {
-  throw new Error(message);
-}
-
-// ============================================
-// 5. REAL-WORLD EXAMPLE: E-commerce Product
-// ============================================
-
-// Simple product type
+// --- Simple Real-World Example ---
 type Product = {
-  id: number;
   name: string;
   price: number;
   inStock: boolean;
-  tags?: string[];
 };
 
-// Function to calculate discount
-function applyDiscount(product: Product, discountPercent: number): number {
-  if (discountPercent < 0 || discountPercent > 100) {
-    throw new Error("Discount must be between 0 and 100");
-  }
-  return product.price * (1 - discountPercent / 100);
+function applyDiscount(product: Product, percent: number): number {
+  return product.price * (1 - percent / 100);
 }
 
-// Function to check if product is available
-function isAvailable(product: Product): boolean {
-  return product.inStock && product.price > 0;
-}
-
-// Usage
-const laptop: Product = {
-  id: 1,
-  name: "MacBook Pro",
-  price: 2499,
-  inStock: true,
-  tags: ["electronics", "computers"],
-};
-
-const discountedPrice = applyDiscount(laptop, 10); // $2249.10
-console.log(`Discounted price: $${discountedPrice}`);
-
-// ============================================
-// KEY TAKEAWAYS
-// ============================================
+const laptop: Product = { name: "MacBook", price: 2499, inStock: true };
+console.log(applyDiscount(laptop, 10)); // 2249.1
 
 /*
-✅ Use explicit types for function parameters and return values
-✅ Let TypeScript infer types for variables when obvious
-✅ Use optional properties (?) for non-required fields
-✅ Avoid 'any' - use 'unknown' if type is truly unknown
-✅ Type annotations help catch errors at compile time, not runtime
+  KEY TAKEAWAYS:
+  ✅ Be explicit with function params & return types
+  ✅ Let TS infer variable types when it's obvious
+  ✅ Use ? for optional, use defaults where it makes sense
+  ✅ Prefer unknown over any
 */
