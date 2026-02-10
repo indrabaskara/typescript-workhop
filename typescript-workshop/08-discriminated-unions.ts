@@ -2,28 +2,22 @@
 // 08 - DISCRIMINATED UNIONS & WRAP-UP
 // ============================================
 
-// This is the most useful advanced pattern in TypeScript.
-// A "discriminated union" = union types that share a common field
-// so TypeScript can tell them apart.
+// One example: a request-state machine showing discriminated unions,
+// switch narrowing, and exhaustiveness checking with never.
 
-// --- The Problem: ambiguous state ---
-
-// ❌ Bad — can be loading AND have an error at the same time?
-type BadState = {
-  loading?: boolean;
-  data?: string;
-  error?: string;
-};
-
-// --- The Solution: one state at a time ---
-
-// ✅ Good — each state is its own type with a shared "status" field
 type Loading = { status: "loading" };
 type Success = { status: "success"; data: string };
 type Failed = { status: "error"; error: string };
 
 type RequestState = Loading | Success | Failed;
 
+/**
+ * Renders a UI string based on the current request state.
+ * Uses a discriminated union (shared "status" field) with switch
+ * for type-safe narrowing and a never-based exhaustiveness check.
+ * @param state - The current request state.
+ * @returns A display string for the given state.
+ */
 function render(state: RequestState): string {
   switch (state.status) {
     case "loading":
@@ -32,6 +26,10 @@ function render(state: RequestState): string {
       return `Data: ${state.data}`; // TS knows .data exists
     case "error":
       return `Error: ${state.error}`; // TS knows .error exists
+    default:
+      // Exhaustiveness check — TS errors here if a case is missing
+      const _never: never = state;
+      return _never;
   }
 }
 
@@ -44,71 +42,12 @@ console.log(render({ status: "success", data: "Hello!" }));
 console.log(render({ status: "error", error: "Network failed" }));
 // → "Error: Network failed"
 
-// --- Simple real-world example: notifications ---
-
-type EmailNotification = {
-  channel: "email";
-  to: string;
-  subject: string;
-};
-
-type SmsNotification = {
-  channel: "sms";
-  phone: string;
-  message: string;
-};
-
-type PushNotification = {
-  channel: "push";
-  title: string;
-};
-
-type Notification = EmailNotification | SmsNotification | PushNotification;
-
-function send(n: Notification): string {
-  switch (n.channel) {
-    case "email":
-      return `Email to ${n.to}: ${n.subject}`;
-    case "sms":
-      return `SMS to ${n.phone}: ${n.message}`;
-    case "push":
-      return `Push: ${n.title}`;
-  }
-}
-
-console.log(send({ channel: "email", to: "a@b.com", subject: "Hi" }));
-// → "Email to a@b.com: Hi"
-
-console.log(send({ channel: "sms", phone: "+123", message: "Hello" }));
-// → "SMS to +123: Hello"
-
-// --- Exhaustiveness check with `never` ---
-// If you add a new notification channel later and forget to handle it,
-// TypeScript will catch it at compile time:
-
-function sendStrict(n: Notification): string {
-  switch (n.channel) {
-    case "email":
-      return `Email to ${n.to}`;
-    case "sms":
-      return `SMS to ${n.phone}`;
-    case "push":
-      return `Push: ${n.title}`;
-    default:
-      // If all cases are handled, this line is unreachable.
-      // If you add a new channel and forget it above, TS will error HERE.
-      const _never: never = n;
-      return _never;
-  }
-}
-
 /*
   KEY TAKEAWAYS:
-  ✅ Add a shared field (like "status" or "channel") to each type
+  ✅ Add a shared field (like "status") to each type
   ✅ Use switch on that field — TS narrows each case automatically
   ✅ Impossible states become impossible (can't be loading AND errored)
   ✅ Use `never` in default for exhaustiveness checking
-  ✅ This pattern is used everywhere: Redux, API responses, UI state, etc.
 */
 
 // ============================================
@@ -124,11 +63,4 @@ function sendStrict(n: Notification): string {
   06 - Type Guards    → typeof, instanceof, catch(unknown), error handling
   07 - Literals/Enums → "up" | "down", enum LogLevel, as const
   08 - Discriminated  → shared field + switch = type-safe state
-
-  🎯 Golden rules:
-  • Let TS infer when obvious, be explicit with function signatures
-  • Prefer unknown over any
-  • Use discriminated unions over optional flags
-  • Combine utility types (Partial<Omit<T, "id">>) for real patterns
-  • Hover over things in your editor — the types will teach you!
 */

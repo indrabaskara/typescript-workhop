@@ -2,90 +2,20 @@
 // 07 - LITERAL TYPES, ENUMS & as const
 // ============================================
 
-// --- String Literal Types ---
-// Only these exact values are allowed
+// One example: a logging system showing string literals, enums,
+// and as const for deriving types from data.
 
-type Direction = "up" | "down" | "left" | "right";
+// --- String Literal Type ---
+type LogLevel = "debug" | "info" | "warn" | "error";
 
-function move(dir: Direction) {
-  console.log(`Moving ${dir}`);
-}
-
-move("up"); // ✅
-// move("diagonal"); // ❌ not in the union
-
-// --- Use them in objects for strict fields ---
-
-type Order = {
-  id: number;
-  status: "pending" | "shipped" | "delivered";
-};
-
-const order: Order = { id: 1, status: "shipped" }; // ✅
-// const bad: Order = { id: 2, status: "cancelled" }; // ❌
-
-// --- Number Literal Types ---
-
-type DiceRoll = 1 | 2 | 3 | 4 | 5 | 6;
-
-function roll(): DiceRoll {
-  return (Math.floor(Math.random() * 6) + 1) as DiceRoll;
-}
-
-// --- Enums (grouped constants) ---
-// Use when you have a fixed set of related values
-
-enum LogLevel {
-  Debug = "DEBUG",
-  Info = "INFO",
-  Warn = "WARN",
-  Error = "ERROR",
-}
-
-function log(message: string, level: LogLevel) {
-  console.log(`[${level}] ${message}`);
-}
-
-log("Server started", LogLevel.Info); // [INFO] Server started
-log("Disk full", LogLevel.Error); // [ERROR] Disk full
-
-// Numeric enums (auto-increment from 0)
+// --- Enum (when you need a namespace or numeric values) ---
 enum HttpStatus {
   Ok = 200,
   NotFound = 404,
   ServerError = 500,
 }
 
-function isSuccess(status: HttpStatus): boolean {
-  return status === HttpStatus.Ok;
-}
-
-// --- When to use enum vs literal type? ---
-
-// ✅ Literal type — simple, lightweight, most cases
-type Theme = "light" | "dark";
-
-// ✅ Enum — when you need a namespace or numeric values
-enum Permission {
-  Read = 1,
-  Write = 2,
-  Admin = 4,
-}
-
-// --- as const — freeze values into literal types ---
-
-// Without as const:
-const colors1 = { primary: "blue", secondary: "green" };
-// type is { primary: string, secondary: string } — too wide
-
-// With as const:
-const colors2 = { primary: "blue", secondary: "green" } as const;
-// type is { readonly primary: "blue", readonly secondary: "green" } — exact
-
-// Great for deriving types from data
-const ROLES = ["admin", "editor", "viewer"] as const;
-type Role = (typeof ROLES)[number]; // "admin" | "editor" | "viewer"
-
+// --- as const: derive a type from runtime data ---
 const ENDPOINTS = {
   users: "/api/users",
   posts: "/api/posts",
@@ -93,6 +23,21 @@ const ENDPOINTS = {
 
 type Endpoint = (typeof ENDPOINTS)[keyof typeof ENDPOINTS];
 // "/api/users" | "/api/posts"
+
+/**
+ * Logs a message with a given severity level.
+ * Demonstrates literal types restricting values at compile time.
+ * @param message - The log message.
+ * @param level - The severity level (literal type).
+ */
+function log(message: string, level: LogLevel): void {
+  console.log(`[${level.toUpperCase()}] ${message}`);
+}
+
+log("Server started", "info"); // ✅
+// log("Oops", "critical");    // ❌ not in the union
+
+console.log(HttpStatus.Ok); // 200
 
 /*
   KEY TAKEAWAYS:

@@ -2,63 +2,26 @@
 // 03 - UNIONS & INTERSECTIONS
 // ============================================
 
-// --- Union (|) = "this OR that" ---
-type Status = "pending" | "paid" | "failed";
-type ID = string | number;
+// One example: a payment system showing unions (|) for alternate
+// types and intersections (&) for combining types.
 
-let orderId: ID = "abc-123";
-orderId = 42; // also valid
+type CreditCard = { method: "card"; cardNumber: string };
+type BankTransfer = { method: "bank"; accountNumber: string };
+type Cash = { method: "cash" };
 
-function printStatus(status: Status) {
-  console.log(`Order is ${status}`);
-}
-
-printStatus("paid"); // ✅
-// printStatus("cancelled"); // ❌ not in the union
-
-// --- Working with unions (narrowing) ---
-function formatId(id: string | number): string {
-  if (typeof id === "string") {
-    return id.toUpperCase(); // TS knows it's string
-  }
-  return `#${id}`; // TS knows it's number
-}
-
-// --- Intersection (&) = "this AND that" ---
-type HasName = { name: string };
-type HasEmail = { email: string };
-
-type Contact = HasName & HasEmail; // must have BOTH
-
-const contact: Contact = {
-  name: "Alice",
-  email: "alice@example.com",
-};
-
-// --- Simple Real-World Example: Payments ---
-
-type CreditCard = {
-  method: "card";
-  cardNumber: string;
-};
-
-type BankTransfer = {
-  method: "bank";
-  accountNumber: string;
-};
-
-type Cash = {
-  method: "cash";
-};
-
-// Union of payment methods
+// Union (|) = value can be ONE of several types
 type PaymentMethod = CreditCard | BankTransfer | Cash;
 
-type Payment = {
-  amount: number;
-  currency: string;
-} & { method: PaymentMethod }; // intersection adds method
+// Intersection (&) = value must satisfy ALL types
+type PaymentRecord = { amount: number; currency: string } & {
+  paymentMethod: PaymentMethod;
+};
 
+/**
+ * Describes a payment method using type narrowing via switch.
+ * @param pm - The payment method to describe.
+ * @returns A human-readable description of the payment.
+ */
 function describePayment(pm: PaymentMethod): string {
   switch (pm.method) {
     case "card":
@@ -83,5 +46,4 @@ console.log(describePayment({ method: "cash" }));
   ✅ Union (|) = value can be ONE of several types
   ✅ Intersection (&) = value must satisfy ALL types
   ✅ Use switch/if to narrow unions safely
-  ✅ Unions + a shared field ("method") = discriminated union (topic 07)
 */

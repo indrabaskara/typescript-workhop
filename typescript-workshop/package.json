@@ -15,8 +15,6 @@
     "run:guards": "ts-node 06-type-guards.ts",
     "run:literals": "ts-node 07-literals-enums.ts",
     "run:discriminated": "ts-node 08-discriminated-unions.ts",
-    "run:conditional": "ts-node 09-conditional-types.ts",
-    "run:advanced": "ts-node 10-advanced-patterns.ts",
     "check": "tsc --noEmit",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write \"**/*.ts\"",

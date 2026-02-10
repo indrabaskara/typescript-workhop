@@ -40,7 +40,7 @@ function tax(price: number, rate: number = 0.1): number {
 }
 
 // void — no return value
-function log(msg: string): void {
+function logger(msg: string): void {
   console.log(msg);
 }
 

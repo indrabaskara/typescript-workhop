@@ -2,15 +2,17 @@
 // 02 - INTERFACES vs TYPES
 // ============================================
 
-// --- Interface: best for object shapes ---
-interface User {
+// One example showing interface (extends & merge), type (unions &
+// intersections), and when to use which.
+
+// --- Interface: best for object shapes (can extend & merge) ---
+interface BaseUser {
   id: number;
   name: string;
   email: string;
 }
 
-// extends = inheritance
-interface Admin extends User {
+interface Admin extends BaseUser {
   role: "admin" | "superadmin";
 }
 
@@ -21,59 +23,27 @@ const admin: Admin = {
   role: "admin",
 };
 
-// --- Type: best for unions & combinations ---
+// --- Type: best for unions, intersections & aliases ---
 type Status = "active" | "inactive" | "banned";
-type ID = string | number;
 
-type Product = {
-  id: ID;
-  name: string;
-  price: number;
-};
+/**
+ * Represents an API result that can be either a success or an error.
+ * Demonstrates union types for mutually exclusive outcomes.
+ */
+type Result = { ok: true; data: BaseUser } | { ok: false; error: string };
 
-// intersection (&) = combine types
-type ProductWithStock = Product & {
-  inStock: boolean;
-};
-
-const item: ProductWithStock = {
-  id: "abc",
-  name: "Keyboard",
-  price: 79,
-  inStock: true,
-};
-
-// --- Key Difference: declaration merging ---
-// Interfaces can be declared twice — they merge
-interface Config {
-  apiUrl: string;
-}
-interface Config {
-  timeout: number;
+function handleResult(result: Result): string {
+  if (result.ok) {
+    return `User: ${result.data.name}`;
+  }
+  return `Error: ${result.error}`;
 }
 
-// Now Config has BOTH properties
-const config: Config = {
-  apiUrl: "https://api.example.com",
-  timeout: 5000,
-};
+console.log(handleResult({ ok: true, data: admin }));
+// → "User: Alice"
 
-// Types CANNOT be declared twice
-// type Config = { debug: boolean }; // ❌ Error: duplicate
-
-// --- When to use which? ---
-
-// ✅ interface → objects, classes, public APIs
-interface Order {
-  id: string;
-  total: number;
-  status: Status;
-}
-
-// ✅ type → unions, intersections, simple aliases
-type Result = { ok: true; data: User } | { ok: false; error: string };
-type Coordinate = [number, number];
-type Callback = (value: string) => void;
+console.log(handleResult({ ok: false, error: "Not found" }));
+// → "Error: Not found"
 
 /*
   KEY TAKEAWAYS:
