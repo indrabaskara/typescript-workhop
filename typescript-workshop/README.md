@@ -22,6 +22,7 @@ tsc --version  # should be 5.x
 | 07 | `07-literals-enums.ts` | Literal types, enums, `as const` | 5 min |
 | 08 | `08-discriminated-unions.ts` | The most useful advanced pattern + recap | 7 min |
 | 09 | `09-classes.ts` | Classes, abstract, access modifiers, `implements` | 7 min |
+| 10 | `10-decorators.ts` | Decorators — reusable method/class behavior | 5 min |
 
 ## How to Run
 
