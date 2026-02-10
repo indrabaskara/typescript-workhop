@@ -65,6 +65,27 @@ interface ApiResponse<T> { data: T; ok: boolean; }
 function logLen<T extends { length: number }>(x: T) { console.log(x.length); }
 ```
 
+## Async & Promises
+
+```ts
+// Promise<T> is a generic — always type your async return values
+async function fetchUser(id: number): Promise<User> {
+  return { id, name: "Alice" };
+}
+
+// Generic async function
+async function fetchData<T>(url: string): Promise<ApiResponse<T>> {
+  const res = await fetch(url);
+  return res.json();
+}
+
+// Promise.all preserves individual types
+const [user, scores] = await Promise.all([
+  fetchUser(1),              // Promise<User>
+  Promise.resolve([95, 87]), // Promise<number[]>
+]);
+```
+
 ## Utility Types
 
 ```ts
@@ -93,6 +114,35 @@ x instanceof Date             // classes
 // Custom guard
 function isAdmin(u: User | Admin): u is Admin {
   return "role" in u;
+}
+```
+
+## Error Handling
+
+```ts
+// catch variable is `unknown` — must narrow before using
+try {
+  JSON.parse(input);
+} catch (err: unknown) {
+  if (err instanceof Error) console.log(err.message);
+}
+
+// Helper: safely extract error message
+function getErrorMessage(err: unknown): string {
+  if (err instanceof Error) return err.message;
+  if (typeof err === "string") return err;
+  return "Unknown error";
+}
+
+// Custom Error classes for structured error handling
+class ValidationError extends Error {
+  constructor(public field: string, message: string) {
+    super(message);
+  }
+}
+
+function handleError(err: unknown) {
+  if (err instanceof ValidationError) return err.field; // narrowed
 }
 ```
 

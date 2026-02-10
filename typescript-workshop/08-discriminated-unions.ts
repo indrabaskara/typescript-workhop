@@ -119,9 +119,9 @@ function sendStrict(n: Notification): string {
   01 - Basics        → types, inference, functions, any vs unknown
   02 - Interface/Type → interface for objects, type for unions
   03 - Unions         → string | number, payment methods
-  04 - Generics       → <T> makes code reusable across types
+  04 - Generics       → <T>, Promise<T>, async return types
   05 - Utility Types  → Partial, Omit, Pick, Record
-  06 - Type Guards    → typeof, instanceof, custom "is" guards
+  06 - Type Guards    → typeof, instanceof, catch(unknown), error handling
   07 - Literals/Enums → "up" | "down", enum LogLevel, as const
   08 - Discriminated  → shared field + switch = type-safe state
 

@@ -94,11 +94,94 @@ handleResponse({ ok: true, data: ["a", "b"] });
 handleResponse({ ok: false, error: "Network error" });
 // → "Failed: Network error"
 
+// --- Error handling: narrowing `unknown` in catch blocks ---
+// In strict mode, catch variable is `unknown` — you must narrow it
+
+function safeParseJSON(input: string): unknown {
+  try {
+    return JSON.parse(input);
+  } catch (err: unknown) {
+    // ❌ err.message — won't compile, err is unknown
+    // ✅ narrow first, then access properties
+    if (err instanceof Error) {
+      console.log("Parse error:", err.message); // TS knows it's Error
+    } else {
+      console.log("Unknown error:", err);
+    }
+    return null;
+  }
+}
+
+safeParseJSON("not json");
+// → "Parse error: ..."
+
+safeParseJSON("{}");
+// → returns {}
+
+// Helper function: safely extract error message from anything
+function getErrorMessage(err: unknown): string {
+  if (err instanceof Error) return err.message;
+  if (typeof err === "string") return err;
+  return "An unknown error occurred";
+}
+
+// Usage pattern — wrap risky operations cleanly
+function riskyOperation(): string {
+  try {
+    throw new Error("Something broke");
+  } catch (err: unknown) {
+    return `Failed: ${getErrorMessage(err)}`;
+  }
+}
+
+console.log(riskyOperation());
+// → "Failed: Something broke"
+
+// --- Custom Error classes with type narrowing ---
+
+class ValidationError extends Error {
+  constructor(
+    public field: string,
+    message: string,
+  ) {
+    super(message);
+    this.name = "ValidationError";
+  }
+}
+
+class NetworkError extends Error {
+  constructor(
+    public statusCode: number,
+    message: string,
+  ) {
+    super(message);
+    this.name = "NetworkError";
+  }
+}
+
+function handleError(err: unknown): string {
+  if (err instanceof ValidationError) {
+    return `Validation failed on "${err.field}": ${err.message}`;
+  }
+  if (err instanceof NetworkError) {
+    return `Network error (${err.statusCode}): ${err.message}`;
+  }
+  return `Unexpected: ${getErrorMessage(err)}`;
+}
+
+console.log(handleError(new ValidationError("email", "Invalid format")));
+// → 'Validation failed on "email": Invalid format'
+
+console.log(handleError(new NetworkError(404, "Not found")));
+// → "Network error (404): Not found"
+
 /*
   KEY TAKEAWAYS:
   ✅ typeof     → for primitives (string, number, boolean)
-  ✅ instanceof → for class instances
+  ✅ instanceof → for class instances (including custom Errors)
   ✅ "in"       → check if property exists on object
   ✅ Custom guard (x is Type) → for your own logic
-  ✅ After a guard, TS automatically narrows the type for you
+  ✅ catch (err: unknown) → always narrow before accessing properties
+  ✅ Create a getErrorMessage() helper for consistent error handling
+  ✅ Use custom Error subclasses + instanceof for structured errors
 */
