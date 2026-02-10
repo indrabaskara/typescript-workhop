@@ -1,0 +1,49 @@
+{
+  "name": "typescript-workshop",
+  "version": "1.0.0",
+  "description": "Modern TypeScript Workshop - From Basics to Advanced in 50 minutes",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node 01-basics.ts",
+    "compile": "tsc",
+    "compile:watch": "tsc --watch",
+    "run:basics": "ts-node 01-basics.ts",
+    "run:interfaces": "ts-node 02-interfaces-types.ts",
+    "run:unions": "ts-node 03-unions-intersections.ts",
+    "run:generics": "ts-node 04-generics.ts",
+    "run:utilities": "ts-node 05-utility-types.ts",
+    "run:guards": "ts-node 06-type-guards.ts",
+    "run:literals": "ts-node 07-literals-enums.ts",
+    "run:discriminated": "ts-node 08-discriminated-unions.ts",
+    "run:conditional": "ts-node 09-conditional-types.ts",
+    "run:advanced": "ts-node 10-advanced-patterns.ts",
+    "check": "tsc --noEmit",
+    "lint": "eslint . --ext .ts",
+    "format": "prettier --write \"**/*.ts\"",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "typescript",
+    "workshop",
+    "tutorial",
+    "learning",
+    "types",
+    "generics",
+    "patterns"
+  ],
+  "author": "TypeScript Workshop",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.0",
+    "@typescript-eslint/parser": "^6.13.0",
+    "eslint": "^8.54.0",
+    "prettier": "^3.1.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  }
+}
