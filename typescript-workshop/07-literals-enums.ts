@@ -23,6 +23,8 @@ const ENDPOINTS = {
 
 type Endpoint = (typeof ENDPOINTS)[keyof typeof ENDPOINTS];
 // "/api/users" | "/api/posts"
+type LiteralTemplate = `${LogLevel} ${HttpStatus} ${Endpoint}/:id`;
+const notFoundLog: LiteralTemplate = `error ${HttpStatus.NotFound} ${ENDPOINTS.users}/:id`;
 
 /**
  * Logs a message with a given severity level.
